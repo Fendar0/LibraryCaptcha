@@ -1,0 +1,64 @@
+public Authoorization()
+        {
+            InitializeComponent();       
+
+            captchaText = generateCaptchaCode(6);
+            pictureBox1.Image = generateCaptchaImage();
+        }
+
+
+
+
+
+private string generateCaptchaCode(int charCount)
+        {
+            Random r = new Random();
+            string s = "";
+            for (int i = 0; i < charCount; i++)
+            {
+                int a = r.Next(3);
+                int chr;
+                switch (a)
+                {
+                    case 0:
+                        chr = r.Next(0, 9);
+                        s = s + chr.ToString();
+                        break;
+                    case 1:
+                        chr = r.Next(65, 90);
+                        s = s + Convert.ToChar(chr).ToString();
+                        break;
+                    case 2:
+                        chr = r.Next(97, 122);
+                        s = s + Convert.ToChar(chr).ToString();
+                        break;
+                }
+            }
+            return s;
+        }
+
+        private Bitmap generateCaptchaImage()
+        {
+
+            Bitmap bitmap = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+            Graphics g = Graphics.FromImage(bitmap);
+            Rectangle rect = new Rectangle(0, 0, width, height);
+            HatchBrush hatchBrush = new HatchBrush(HatchStyle.DottedGrid, Color.Aqua, Color.White);
+            g.FillRectangle(hatchBrush, rect);
+
+            GraphicsPath graphicPath = new GraphicsPath();
+            graphicPath.AddString(captchaText, FontFamily.GenericMonospace, (int)FontStyle.Bold, 57, rect, null);
+            hatchBrush = new HatchBrush(HatchStyle.Percent20, Color.Black, Color.DarkGreen);
+            g.FillPath(hatchBrush, graphicPath);
+            for (int i = 0; i < (int)(rect.Width * rect.Height / 50F); i++)
+            {
+                int x = rnd.Next(width);
+                int y = rnd.Next(height);
+                int w = rnd.Next(10);
+                int h = rnd.Next(10);
+                g.FillEllipse(hatchBrush, x, y, w, h);
+            }
+            hatchBrush.Dispose();
+            g.Dispose();
+            return bitmap;
+        }
